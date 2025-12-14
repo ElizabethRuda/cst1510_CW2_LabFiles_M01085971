@@ -72,19 +72,18 @@ The platform provides high-value analysis, insights, and operational capabilitie
 
 3. **Set up environment variables (optional, for AI features):**
    ```bash
-   # Create .env file
-   echo "OPENAI_API_KEY=your_api_key_here" > .env
+   # Create .streamlit/secrets.toml file
+   mkdir -p .streamlit
+   echo "[secrets]" > .streamlit/secrets.toml
+   echo "OPENAI_API_KEY=your_api_key_here" >> .streamlit/secrets.toml
    ```
 
 4. **Initialize the database:**
-   ```bash
-   python -c "from app.data.schema import create_all_tables; create_all_tables()"
-   ```
+   The database is automatically initialized when you first run the application. The `DatabaseManager` class creates all necessary tables on first use.
 
-5. **Load sample data:**
-   ```bash
-   python -c "from app.data.db import connect_database; from app.data.incidents import load_incidents_from_csv; from app.data.datasets import load_datasets_from_csv; from app.data.tickets import load_tickets_from_csv; conn = connect_database(); load_incidents_from_csv(conn); load_datasets_from_csv(conn); load_tickets_from_csv(conn); conn.close()"
-   ```
+   If you need to load sample data from CSV files, ensure the CSV files are in the `DATA/` directory and the database will be created at:
+   - `DATA/intelligence_platform.db` (if exists) or
+   - `multi_domain_platform/database/platform.db` (default)
 
 ### Running the Application
 
@@ -114,41 +113,43 @@ For testing purposes, the following accounts are available:
 
 ```
 project_root/
-├── app/
-│   ├── data/              # Database access layer
-│   │   ├── db.py          # Database connection
-│   │   ├── schema.py      # Database schema definitions
-│   │   ├── incidents.py   # Cyber incidents CRUD
-│   │   ├── datasets.py    # Datasets CRUD
-│   │   ├── tickets.py     # IT tickets CRUD
-│   │   └── users.py       # User management
-│   ├── models/            # OOP model classes
-│   │   ├── user.py        # User model
-│   │   ├── incident.py    # SecurityIncident model
-│   │   ├── dataset.py     # Dataset model
-│   │   └── ticket.py      # ITTicket model
-│   ├── repositories/      # Repository pattern
-│   │   └── incident_repository.py
-│   ├── services/          # Business logic layer
-│   │   ├── ai_service.py  # OpenAI integration
-│   │   ├── incident_service.py
-│   │   ├── dataset_service.py
-│   │   ├── ticket_service.py
-│   │   └── user_service.py
-│   └── examples/          # Usage examples
-│       └── oop_usage_example.py
-├── pages/                 # Streamlit pages
-│   └── Dashboard.py       # Main dashboard
-├── DATA/                  # Database and data files
+├── multi_domain_platform/    # Main application package
+│   ├── models/               # OOP model classes (Week 11)
+│   │   ├── __init__.py
+│   │   ├── user.py           # User model
+│   │   ├── security_incident.py  # SecurityIncident model
+│   │   ├── dataset.py        # Dataset model
+│   │   └── it_ticket.py      # ITTicket model
+│   ├── services/             # Business logic layer
+│   │   ├── __init__.py
+│   │   ├── database_manager.py  # Database operations (CRUD)
+│   │   ├── auth_manager.py      # Authentication with bcrypt
+│   │   └── ai_assistant.py      # OpenAI ChatGPT integration
+│   ├── database/             # Database layer
+│   │   ├── db.py             # Database initialization
+│   │   └── platform.db       # SQLite database (excluded from Git)
+│   └── pages/                # Streamlit pages (Week 9)
+│       ├── 1_🔑_Login.py
+│       ├── 2_🚨_Cybersecurity.py
+│       ├── 3_📊_Data_Science.py
+│       ├── 4_💻_IT_Operations.py
+│       └── 5_🤖_AI_Assistant.py
+├── pages/                    # Streamlit pages (for runtime)
+│   └── Dashboard.py          # Main dashboard
+├── DATA/                     # Database and data files (excluded from Git)
 │   ├── intelligence_platform.db
 │   ├── cyber_incidents.csv
 │   ├── datasets_metadata.csv
 │   └── it_tickets.csv
-├── Home.py                # Main entry point
-├── auth.py                # Authentication functions
-├── requirements.txt       # Python dependencies
-├── .gitignore            # Git ignore rules
-└── README.md             # This file
+├── Home.py                   # Main entry point (streamlit run Home.py)
+├── requirements.txt          # Python dependencies
+├── .gitignore               # Git ignore rules
+├── .cursorrules             # Development rules
+├── README.md                # This file
+├── CW2_TECHNICAL_REPORT.md  # Technical report
+├── UML_DIAGRAM.txt          # UML class diagram
+├── ER_DIAGRAM.txt           # Entity-Relationship diagram
+└── DFD_DIAGRAM.txt          # Data Flow diagram
 ```
 
 ---
@@ -181,11 +182,11 @@ For detailed schema information, see `ER_DIAGRAM.txt`.
 
 ## 🎯 Usage Examples
 
-### Using OOP Models
+### Using OOP Models (Week 11)
 
 ```python
-from app.models.user import User
-from app.models.incident import SecurityIncident
+from multi_domain_platform.models.user import User
+from multi_domain_platform.models.security_incident import SecurityIncident
 
 # Create a user
 password = "SecurePass123!"
@@ -200,9 +201,58 @@ incident = SecurityIncident(
 )
 ```
 
-### Using Repository Pattern
+### Using Database Manager (CRUD Operations - Week 8)
 
 ```python
+from multi_domain_platform.services.database_manager import DatabaseManager
+
+db = DatabaseManager()
+
+# CREATE - Insert new record
+db.execute_update(
+    "INSERT INTO cyber_incidents (title, severity, status) VALUES (?, ?, ?)",
+    ("Malware Detection", "High", "open")
+)
+
+# READ - Query data
+incidents = db.execute_query("SELECT * FROM cyber_incidents WHERE severity = ?", ("Critical",))
+
+# UPDATE - Modify record
+db.execute_update(
+    "UPDATE cyber_incidents SET status = ? WHERE id = ?",
+    ("resolved", 1)
+)
+
+# DELETE - Remove record
+db.execute_update("DELETE FROM cyber_incidents WHERE id = ?", (1,))
+```
+
+### Using Authentication Manager (Week 7)
+
+```python
+from multi_domain_platform.services.auth_manager import AuthManager
+from multi_domain_platform.services.database_manager import DatabaseManager
+
+db = DatabaseManager()
+auth = AuthManager(db)
+
+# Register new user (password automatically hashed with bcrypt)
+auth.register_user("newuser", "SecurePass123!", "user")
+
+# Login user
+success = auth.login_user("newuser", "SecurePass123!")
+```
+
+### Using AI Assistant (Week 10)
+
+```python
+from multi_domain_platform.services.ai_assistant import AIAssistant
+
+ai = AIAssistant()
+if ai.is_available():
+    response = ai.generate_response("What are the top security threats?")
+    print(response)
+```
 from app.repositories.incident_repository import IncidentRepository
 
 repo = IncidentRepository(db_path="DATA/intelligence_platform.db")
@@ -220,8 +270,9 @@ The AI Assistant feature provides intelligent insights for:
 - Data trend analysis
 - General questions about cybersecurity, IT operations, and data science
 
-**Note:** Requires OpenAI API key in `.env` file:
-```
+**Note:** Requires OpenAI API key in `.streamlit/secrets.toml` file:
+```toml
+[secrets]
 OPENAI_API_KEY=your_key_here
 ```
 
@@ -242,13 +293,18 @@ All visualizations are interactive and powered by Plotly.
 
 ## 🏗️ Architecture
 
-The application follows a layered architecture:
+The application follows a layered architecture (MVC pattern):
 
-1. **UI Layer** - Streamlit pages and components
-2. **Service Layer** - Business logic and AI integration
-3. **Repository Layer** - Data access abstraction
-4. **Model Layer** - OOP domain models
-5. **Data Access Layer** - Database operations
+1. **View Layer** - Streamlit pages (`pages/`, `multi_domain_platform/pages/`)
+2. **Service Layer** - Business logic (`multi_domain_platform/services/`)
+   - `database_manager.py` - CRUD operations with parameterized queries
+   - `auth_manager.py` - Authentication with bcrypt hashing
+   - `ai_assistant.py` - OpenAI ChatGPT integration
+3. **Model Layer** - OOP domain models (`multi_domain_platform/models/`)
+   - `User`, `SecurityIncident`, `Dataset`, `ITTicket`
+4. **Data Layer** - Database persistence (`multi_domain_platform/database/`)
+
+**Note:** The root `pages/` directory is used by Streamlit at runtime. The actual source code pages are in `multi_domain_platform/pages/` as per project requirements.
 
 For detailed architecture information, see `UML_DIAGRAM.txt` and `CW2_TECHNICAL_REPORT.md`.
 
@@ -283,22 +339,33 @@ This project implements **Tier 3 (High Distinction)** level:
 
 ### Database Issues
 ```bash
-# Recreate database
+# Database is automatically created on first run
+# If you need to reset, delete the database file:
 rm DATA/intelligence_platform.db
-python -c "from app.data.schema import create_all_tables; create_all_tables()"
+# or
+rm multi_domain_platform/database/platform.db
+# Then restart the application - it will recreate the schema
 ```
 
 ### Import Errors
 ```bash
 # Ensure you're in the project root directory
 cd /path/to/project
+# Make sure all dependencies are installed
+pip install -r requirements.txt
 streamlit run Home.py
 ```
 
 ### AI Assistant Not Working
-- Check that `.env` file exists with `OPENAI_API_KEY`
+- Check that `.streamlit/secrets.toml` file exists with `OPENAI_API_KEY`
 - Verify API key is valid
 - Check internet connection
+- The AI Assistant will show a warning if the API key is not configured
+
+### No Data Showing in Dashboard
+- Ensure the database file exists in `DATA/intelligence_platform.db` or `multi_domain_platform/database/platform.db`
+- Check that CSV files are in the `DATA/` directory if you need to load sample data
+- The `DatabaseManager` automatically checks for existing database in `DATA/` first
 
 ---
 
