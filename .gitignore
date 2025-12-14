@@ -1,17 +1,50 @@
+# Python
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 .Python
 *.so
-*.db
 *.log
 .DS_Store
-.env
-venv/
-env/
-.mypy_cache/
 *.zip
 temp_extract/
-stud.code-workspace
 
+# Virtual environments
+venv/
+env/
+.venv/
+
+# IDE
+.mypy_cache/
+stud.code-workspace
+.vscode/
+.idea/
+
+# Streamlit secrets (sensitive data)
+secrets.toml
+.streamlit/secrets.toml
+
+# Database files (should not be in git)
+*.db
+*.sqlite
+*.sqlite3
+
+# Legacy/unused directories (not part of active project)
+app/
+Streamlit/
+tz/
+
+# Test files (optional - uncomment if you want to exclude)
+# test_db.py
+# main.py
+
+# Data files (if large, should be excluded)
+# DATA/
+# screenshots/
+
+# Documentation build
+docs/_build/
+*.egg-info/
+dist/
+build/
