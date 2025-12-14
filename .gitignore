@@ -9,6 +9,7 @@ __pycache__/
 .DS_Store
 *.zip
 temp_extract/
+**/__pycache__/
 
 # Virtual environments
 venv/
