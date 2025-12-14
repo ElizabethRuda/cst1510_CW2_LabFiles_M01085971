@@ -3,87 +3,80 @@
 **Student Name:** Yelyzaveta Ruda  
 **Student ID:** M01085971  
 **Course:** CST1510 - Multi-Domain Intelligence Platform  
-**Project Type:** Coursework 2 (CW2)
+**Project Type:** Coursework 2 (CW2)  
+**Date:** December 2025
 
 ---
 
-## 📋 Project Overview
+## Project Overview
 
-The **Multi-Domain Intelligence Platform** is a unified web application built with Python and Streamlit that serves three distinct user groups:
+This is a web application built with Python and Streamlit that serves three different user groups:
 
-- **Cybersecurity Analysts** - Incident response and threat analysis
-- **Data Scientists** - Dataset governance and discovery
-- **IT Administrators** - Service desk performance and ticket management
+- Cybersecurity Analysts - for incident response and threat analysis
+- Data Scientists - for dataset governance and discovery
+- IT Administrators - for service desk performance and ticket management
 
-The platform provides high-value analysis, insights, and operational capabilities to address critical real-world problems within each domain.
+The platform provides analysis and insights for each domain.
 
 ---
 
-## ✨ Features
+## Features
 
 ### Core Features
-- ✅ **Secure Authentication** - Password hashing with bcrypt, role-based access
-- ✅ **SQLite Database** - Full CRUD operations for all three domains
-- ✅ **Interactive Dashboards** - Real-time data visualization with Plotly
-- ✅ **AI Integration** - OpenAI-powered assistant for intelligent insights
-- ✅ **Object-Oriented Architecture** - Clean, maintainable code structure
+- Secure authentication with bcrypt password hashing
+- SQLite database with CRUD operations for all three domains
+- Interactive dashboards with Plotly visualizations
+- AI integration using OpenAI API
+- Object-oriented code structure
 
-### Domain-Specific Features
+### Domain Features
 
-#### 🛡️ Cybersecurity Domain
+**Cybersecurity Domain:**
 - Incident tracking and severity analysis
 - Threat trend identification
 - Resolution time analysis
-- Interactive visualizations (pie charts, bar charts, timelines)
+- Charts and visualizations
 
-#### 📚 Data Science Domain
+**Data Science Domain:**
 - Dataset catalog management
 - Resource consumption analysis
-- Data governance recommendations
 - Size distribution visualizations
 
-#### 🎫 IT Operations Domain
+**IT Operations Domain:**
 - Ticket priority and status tracking
 - Performance metrics
-- Process efficiency analysis
 - Resolution workflow visualization
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
-
 - Python 3.8 or higher
-- pip (Python package manager)
+- pip package manager
 
 ### Installation
 
-1. **Clone the repository:**
+1. Clone the repository:
    ```bash
-   git clone <repository-url>
-   cd <project-directory>
+   git clone https://github.com/ElizabethRuda/cst1510_CW2_LabFiles_M01085971.git
+   cd cst1510_CW2_LabFiles_M01085971
    ```
 
-2. **Install dependencies:**
+2. Install dependencies:
    ```bash
    pip install -r requirements.txt
    ```
 
-3. **Set up environment variables (optional, for AI features):**
-   ```bash
-   # Create .streamlit/secrets.toml file
-   mkdir -p .streamlit
-   echo "[secrets]" > .streamlit/secrets.toml
-   echo "OPENAI_API_KEY=your_api_key_here" >> .streamlit/secrets.toml
+3. Set up AI features (optional):
+   Create `.streamlit/secrets.toml` file:
+   ```toml
+   [secrets]
+   OPENAI_API_KEY=your_api_key_here
    ```
 
-4. **Initialize the database:**
-   The database is automatically initialized when you first run the application. The `DatabaseManager` class creates all necessary tables on first use.
-
-   If you need to load sample data from CSV files, ensure the CSV files are in the `DATA/` directory and the database will be created at:
-   - `DATA/intelligence_platform.db` (if exists) or
-   - `multi_domain_platform/database/platform.db` (default)
+4. Database initialization:
+   The database is automatically created when you first run the application. If you have CSV files in the `DATA/` directory, the database will use `DATA/intelligence_platform.db`. Otherwise, it creates `multi_domain_platform/database/platform.db`.
 
 ### Running the Application
 
@@ -91,98 +84,92 @@ The platform provides high-value analysis, insights, and operational capabilitie
 streamlit run Home.py
 ```
 
-The application will be available at:
-- **Local URL:** http://localhost:8501
-- **Network URL:** http://<your-ip>:8501
+The application will be available at http://localhost:8501
 
 ---
 
-## 🔐 Default Login Credentials
+## Default Login Credentials
 
-For testing purposes, the following accounts are available:
+For testing, you can use these accounts:
 
 | Username | Password | Role |
 |----------|----------|------|
-| `admin` | `Admin123!` | Admin |
-| `test` | `Test123!` | User |
-| `user` | `User123!` | User |
+| admin | Admin123! | Admin |
+| test | Test123! | User |
+| user | User123! | User |
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 project_root/
-├── multi_domain_platform/    # Main application package
-│   ├── models/               # OOP model classes (Week 11)
-│   │   ├── __init__.py
-│   │   ├── user.py           # User model
-│   │   ├── security_incident.py  # SecurityIncident model
-│   │   ├── dataset.py        # Dataset model
-│   │   └── it_ticket.py      # ITTicket model
-│   ├── services/             # Business logic layer
-│   │   ├── __init__.py
-│   │   ├── database_manager.py  # Database operations (CRUD)
-│   │   ├── auth_manager.py      # Authentication with bcrypt
-│   │   └── ai_assistant.py      # OpenAI ChatGPT integration
+├── multi_domain_platform/
+│   ├── models/               # OOP model classes
+│   │   ├── user.py
+│   │   ├── security_incident.py
+│   │   ├── dataset.py
+│   │   └── it_ticket.py
+│   ├── services/             # Business logic
+│   │   ├── database_manager.py
+│   │   ├── auth_manager.py
+│   │   └── ai_assistant.py
 │   ├── database/             # Database layer
-│   │   ├── db.py             # Database initialization
-│   │   └── platform.db       # SQLite database (excluded from Git)
-│   └── pages/                # Streamlit pages (Week 9)
+│   │   ├── db.py
+│   │   └── platform.db
+│   └── pages/                # Streamlit pages
 │       ├── 1_🔑_Login.py
 │       ├── 2_🚨_Cybersecurity.py
 │       ├── 3_📊_Data_Science.py
 │       ├── 4_💻_IT_Operations.py
 │       └── 5_🤖_AI_Assistant.py
-├── pages/                    # Streamlit pages (for runtime)
-│   └── Dashboard.py          # Main dashboard
-├── DATA/                     # Database and data files (excluded from Git)
+├── pages/                    # Dashboard page
+│   └── Dashboard.py
+├── DATA/                     # Data files (not in git)
 │   ├── intelligence_platform.db
 │   ├── cyber_incidents.csv
 │   ├── datasets_metadata.csv
 │   └── it_tickets.csv
-├── Home.py                   # Main entry point (streamlit run Home.py)
-├── requirements.txt          # Python dependencies
-├── .gitignore               # Git ignore rules
-├── .cursorrules             # Development rules
-├── README.md                # This file
-├── CW2_TECHNICAL_REPORT.md  # Technical report
-├── UML_DIAGRAM.txt          # UML class diagram
-├── ER_DIAGRAM.txt           # Entity-Relationship diagram
-└── DFD_DIAGRAM.txt          # Data Flow diagram
+├── Home.py                   # Main entry point
+├── requirements.txt
+├── README.md
+├── CW2_TECHNICAL_REPORT.md
+├── UML_DIAGRAM.txt
+├── ER_DIAGRAM.txt
+└── DFD_DIAGRAM.txt
 ```
 
 ---
 
-## 🛠️ Technology Stack
+## Technology Stack
 
-- **Backend:** Python 3.x
-- **Web Framework:** Streamlit 1.28.0+
-- **Database:** SQLite3
-- **Data Processing:** Pandas 2.0.0+
-- **Visualization:** Plotly 5.17.0+
-- **Security:** bcrypt 4.0.0+
-- **AI Integration:** OpenAI API (GPT-3.5-turbo)
-- **Environment Management:** python-dotenv
+- Python 3.x
+- Streamlit 1.28.0+
+- SQLite3
+- Pandas 2.0.0+
+- Plotly 5.17.0+
+- bcrypt 4.0.0+
+- OpenAI API (GPT-3.5-turbo)
+- python-dotenv
 
 ---
 
-## 📊 Database Schema
+## Database Schema
 
 The application uses SQLite with four main tables:
 
-1. **users** - User authentication and roles
-2. **cyber_incidents** - Security incident records
-3. **datasets_metadata** - Dataset catalog information
-4. **it_tickets** - IT support ticket records
+1. users - User authentication and roles
+2. cyber_incidents - Security incident records
+3. datasets_metadata - Dataset catalog information
+4. it_tickets - IT support ticket records
 
-For detailed schema information, see `ER_DIAGRAM.txt`.
+For detailed schema, see `ER_DIAGRAM.txt`.
 
 ---
 
-## 🎯 Usage Examples
+## Usage Examples
 
-### Using OOP Models (Week 11)
+### Using OOP Models
 
 ```python
 from multi_domain_platform.models.user import User
@@ -201,33 +188,33 @@ incident = SecurityIncident(
 )
 ```
 
-### Using Database Manager (CRUD Operations - Week 8)
+### Using Database Manager (CRUD)
 
 ```python
 from multi_domain_platform.services.database_manager import DatabaseManager
 
 db = DatabaseManager()
 
-# CREATE - Insert new record
+# CREATE
 db.execute_update(
     "INSERT INTO cyber_incidents (title, severity, status) VALUES (?, ?, ?)",
     ("Malware Detection", "High", "open")
 )
 
-# READ - Query data
+# READ
 incidents = db.execute_query("SELECT * FROM cyber_incidents WHERE severity = ?", ("Critical",))
 
-# UPDATE - Modify record
+# UPDATE
 db.execute_update(
     "UPDATE cyber_incidents SET status = ? WHERE id = ?",
     ("resolved", 1)
 )
 
-# DELETE - Remove record
+# DELETE
 db.execute_update("DELETE FROM cyber_incidents WHERE id = ?", (1,))
 ```
 
-### Using Authentication Manager (Week 7)
+### Using Authentication
 
 ```python
 from multi_domain_platform.services.auth_manager import AuthManager
@@ -236,14 +223,14 @@ from multi_domain_platform.services.database_manager import DatabaseManager
 db = DatabaseManager()
 auth = AuthManager(db)
 
-# Register new user (password automatically hashed with bcrypt)
+# Register user (password hashed with bcrypt)
 auth.register_user("newuser", "SecurePass123!", "user")
 
-# Login user
+# Login
 success = auth.login_user("newuser", "SecurePass123!")
 ```
 
-### Using AI Assistant (Week 10)
+### Using AI Assistant
 
 ```python
 from multi_domain_platform.services.ai_assistant import AIAssistant
@@ -253,24 +240,14 @@ if ai.is_available():
     response = ai.generate_response("What are the top security threats?")
     print(response)
 ```
-from app.repositories.incident_repository import IncidentRepository
-
-repo = IncidentRepository(db_path="DATA/intelligence_platform.db")
-incidents = repo.get_all()
-```
-
-See `app/examples/oop_usage_example.py` for more examples.
 
 ---
 
-## 🤖 AI Assistant
+## AI Assistant
 
-The AI Assistant feature provides intelligent insights for:
-- Security advice based on incident summaries
-- Data trend analysis
-- General questions about cybersecurity, IT operations, and data science
+The AI Assistant provides insights for security advice, data analysis, and general questions about cybersecurity, IT operations, and data science.
 
-**Note:** Requires OpenAI API key in `.streamlit/secrets.toml` file:
+Requires OpenAI API key in `.streamlit/secrets.toml`:
 ```toml
 [secrets]
 OPENAI_API_KEY=your_key_here
@@ -278,116 +255,82 @@ OPENAI_API_KEY=your_key_here
 
 ---
 
-## 📈 Visualizations
+## Visualizations
 
-The Dashboard includes comprehensive visualizations:
+The Dashboard includes:
+- Pie charts for distribution analysis
+- Bar charts for count comparisons
+- Line charts for timeline trends
+- Histograms for size distributions
 
-- **Pie Charts** - Distribution analysis (severity, status, category)
-- **Bar Charts** - Count comparisons
-- **Line Charts** - Timeline trends
-- **Histograms** - Size distributions
-
-All visualizations are interactive and powered by Plotly.
-
----
-
-## 🏗️ Architecture
-
-The application follows a layered architecture (MVC pattern):
-
-1. **View Layer** - Streamlit pages (`pages/`, `multi_domain_platform/pages/`)
-2. **Service Layer** - Business logic (`multi_domain_platform/services/`)
-   - `database_manager.py` - CRUD operations with parameterized queries
-   - `auth_manager.py` - Authentication with bcrypt hashing
-   - `ai_assistant.py` - OpenAI ChatGPT integration
-3. **Model Layer** - OOP domain models (`multi_domain_platform/models/`)
-   - `User`, `SecurityIncident`, `Dataset`, `ITTicket`
-4. **Data Layer** - Database persistence (`multi_domain_platform/database/`)
-
-**Note:** The root `pages/` directory is used by Streamlit at runtime. The actual source code pages are in `multi_domain_platform/pages/` as per project requirements.
-
-For detailed architecture information, see `UML_DIAGRAM.txt` and `CW2_TECHNICAL_REPORT.md`.
+All visualizations are interactive using Plotly.
 
 ---
 
-## 📝 Documentation
+## Architecture
 
-- **Technical Report:** `CW2_TECHNICAL_REPORT.md` (1,384 words)
-- **UML Diagram:** `UML_DIAGRAM.txt`
-- **ER Diagram:** `ER_DIAGRAM.txt`
-- **Data Flow Diagram:** `DFD_DIAGRAM.txt`
-- **Requirements Check:** `REQUIREMENTS_CHECK.md`
+The application follows MVC architecture:
 
----
+1. View Layer - Streamlit pages
+2. Service Layer - Business logic (database_manager, auth_manager, ai_assistant)
+3. Model Layer - OOP domain models (User, SecurityIncident, Dataset, ITTicket)
+4. Data Layer - Database persistence
 
-## ✅ Requirements Compliance
-
-This project implements **Tier 3 (High Distinction)** level:
-
-- ✅ All three domains fully implemented
-- ✅ Secure authentication with bcrypt
-- ✅ Complete CRUD operations
-- ✅ Comprehensive visualizations
-- ✅ AI integration
-- ✅ OOP refactoring
-- ✅ Repository pattern
-- ✅ Technical documentation
+For detailed architecture, see `UML_DIAGRAM.txt` and `CW2_TECHNICAL_REPORT.md`.
 
 ---
 
-## 🐛 Troubleshooting
+## Documentation
+
+- Technical Report: `CW2_TECHNICAL_REPORT.md`
+- UML Diagram: `UML_DIAGRAM.txt`
+- ER Diagram: `ER_DIAGRAM.txt`
+- Data Flow Diagram: `DFD_DIAGRAM.txt`
+
+---
+
+## Requirements Compliance
+
+This project implements Tier 3 (High Distinction) level:
+
+- All three domains fully implemented
+- Secure authentication with bcrypt
+- Complete CRUD operations with parameterized queries
+- Comprehensive visualizations
+- AI integration
+- OOP refactoring
+- Technical documentation
+
+---
+
+## Troubleshooting
 
 ### Database Issues
-```bash
-# Database is automatically created on first run
-# If you need to reset, delete the database file:
-rm DATA/intelligence_platform.db
-# or
-rm multi_domain_platform/database/platform.db
-# Then restart the application - it will recreate the schema
-```
+The database is automatically created on first run. If you need to reset it, delete the database file and restart the application.
 
 ### Import Errors
+Make sure you're in the project root directory and all dependencies are installed:
 ```bash
-# Ensure you're in the project root directory
-cd /path/to/project
-# Make sure all dependencies are installed
 pip install -r requirements.txt
 streamlit run Home.py
 ```
 
 ### AI Assistant Not Working
-- Check that `.streamlit/secrets.toml` file exists with `OPENAI_API_KEY`
+- Check that `.streamlit/secrets.toml` exists with `OPENAI_API_KEY`
 - Verify API key is valid
 - Check internet connection
-- The AI Assistant will show a warning if the API key is not configured
 
-### No Data Showing in Dashboard
-- Ensure the database file exists in `DATA/intelligence_platform.db` or `multi_domain_platform/database/platform.db`
-- Check that CSV files are in the `DATA/` directory if you need to load sample data
-- The `DatabaseManager` automatically checks for existing database in `DATA/` first
+### No Data Showing
+- Ensure database file exists in `DATA/intelligence_platform.db` or `multi_domain_platform/database/platform.db`
+- Check CSV files are in `DATA/` directory if loading sample data
 
 ---
 
-## 📄 License
+## Author
 
-This project is part of CST1510 coursework at Leeds Beckett University.
-
----
-
-## 👤 Author
-
-**Yelyzaveta Ruda**  
+Yelyzaveta Ruda  
 Student ID: M01085971  
 Email: M01085971@students.leedsbeckett.ac.uk
-
----
-
-## 🙏 Acknowledgments
-
-- Streamlit team for the excellent web framework
-- OpenAI for AI capabilities
-- Plotly for interactive visualizations
 
 ---
 
