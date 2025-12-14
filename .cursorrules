@@ -1,0 +1,63 @@
+# Cursor Rules for Multi-Domain Intelligence Platform (CW2)
+
+## CRITICAL RULES - ALWAYS FOLLOW
+
+1. **NEVER invent or add features not specified in requirements**
+   - Only implement what is explicitly required in tz/ documents
+   - Do not add "nice-to-have" features without explicit permission
+   - Stick to the exact structure specified in requirements
+
+2. **Project Structure - EXACTLY as specified:**
+   ```
+   multi_domain_platform/
+   ├── models/
+   ├── services/
+   ├── database/
+   └── pages/
+   ```
+   - Use `multi_domain_platform/` NOT `app/`
+   - All code must use `multi_domain_platform` imports
+   - Pages must be in `multi_domain_platform/pages/` or `pages/` at root
+
+3. **Language Requirements:**
+   - ALL code, comments, docstrings, and user-facing text MUST be in English
+   - NO Russian text anywhere in the codebase
+   - NO Cyrillic characters in code
+
+4. **Git Repository:**
+   - Only commit files specified in requirements
+   - Exclude: test files, temporary files, DATA/, secrets.toml, *.db files
+   - Include: Home.py, requirements.txt, README.md, .gitignore, documentation, diagrams
+   - Include: multi_domain_platform/ structure (NOT app/)
+
+5. **Before Making Changes:**
+   - Always check tz/ requirements first
+   - Verify current structure matches requirements
+   - Ask for confirmation if unsure about structure changes
+
+6. **Documentation:**
+   - README.md must have: Student Name, Student ID, Course, December 2025
+   - All documentation in English only
+   - Include required diagrams: UML, ER, DFD
+
+7. **Code Quality:**
+   - Follow existing patterns
+   - Use OOP where specified
+   - Implement proper error handling
+   - Add docstrings to all classes and functions
+
+## DO NOT:
+- Create `app/` structure (use `multi_domain_platform/`)
+- Add features not in requirements
+- Use Russian text anywhere
+- Commit database files or secrets
+- Invent new file structures
+- Skip requirement verification
+
+## ALWAYS:
+- Check tz/ requirements before changes
+- Use `multi_domain_platform/` structure
+- Write everything in English
+- Verify structure matches requirements
+- Test before committing
+

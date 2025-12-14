@@ -12,11 +12,8 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from app.data.db import connect_database
-from app.data.incidents import get_all_incidents
-from app.data.datasets import get_all_datasets
-from app.data.tickets import get_all_tickets
-from app.services.ai_service import get_ai_service
+from multi_domain_platform.services.database_manager import DatabaseManager
+from multi_domain_platform.services.ai_assistant import AIAssistant
 
 # Page configuration
 st.set_page_config(
@@ -33,8 +30,8 @@ if "logged_in" not in st.session_state or not st.session_state.logged_in:
         st.switch_page("Home.py")
     st.stop()
 
-# Connect to database
-conn = connect_database()
+# Initialize database manager
+db_manager = DatabaseManager()
 
 # Custom CSS
 st.markdown("""
@@ -62,18 +59,12 @@ st.caption("📈 Data loaded from Multi-Domain Intelligence Platform database")
 
 # Load data
 try:
-    incidents_data = get_all_incidents(conn)
-    datasets_data = get_all_datasets(conn)
-    tickets_data = get_all_tickets(conn)
-    
-    # Convert tuples to lists of dicts for DataFrame
-    incidents = [{"id": row[0], "title": row[1], "severity": row[2], "status": row[3], "date": row[4]} for row in incidents_data]
-    datasets = [{"id": row[0], "name": row[1], "source": row[2], "category": row[3], "size": row[4]} for row in datasets_data]
-    tickets = [{"id": row[0], "title": row[1], "priority": row[2], "status": row[3], "created_date": row[4]} for row in tickets_data]
+    incidents = db_manager.execute_query("SELECT * FROM cyber_incidents")
+    datasets = db_manager.execute_query("SELECT * FROM datasets_metadata")
+    tickets = db_manager.execute_query("SELECT * FROM it_tickets")
 except Exception as e:
     st.error(f"❌ Database error: {e}")
     st.info("💡 Make sure the database exists and contains data.")
-    conn.close()
     st.stop()
 
 # Convert to DataFrames
@@ -415,9 +406,9 @@ with tab4:
 with tab5:
     st.subheader("🤖 AI Assistant")
     
-    ai_service = get_ai_service()
+    ai_assistant = AIAssistant()
     
-    if not ai_service.is_available():
+    if not ai_assistant.is_available():
         st.warning("⚠️ OpenAI API key not configured. Please set OPENAI_API_KEY in secrets.toml.")
         st.info("💡 Add your API key to `.streamlit/secrets.toml` or `secrets.toml` file.")
     else:
@@ -441,12 +432,8 @@ with tab5:
             
             # Get AI response
             with st.spinner("Thinking..."):
-                context = {
-                    "total_incidents": len(inc_df),
-                    "total_datasets": len(dat_df),
-                    "total_tickets": len(tic_df)
-                }
-                response = ai_service.chat(user_input, context)
+                context = f"Total incidents: {len(inc_df)}, Total datasets: {len(dat_df)}, Total tickets: {len(tic_df)}"
+                response = ai_assistant.generate_response(user_input, context)
             
             # Add AI response
             st.session_state.ai_messages.append({"role": "assistant", "content": response})
