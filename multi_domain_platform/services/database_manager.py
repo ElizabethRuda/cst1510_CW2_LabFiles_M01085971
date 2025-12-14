@@ -12,9 +12,16 @@ class DatabaseManager:
     def __init__(self, db_path: Optional[str] = None):
         """Initialize database manager"""
         if db_path is None:
-            # Default to database/platform.db relative to project root
             project_root = Path(__file__).resolve().parents[2]
-            db_path = project_root / "multi_domain_platform" / "database" / "platform.db"
+            # Check if old database exists in DATA/
+            old_db = project_root / "DATA" / "intelligence_platform.db"
+            new_db = project_root / "multi_domain_platform" / "database" / "platform.db"
+            
+            # Use old database if it exists, otherwise use new location
+            if old_db.exists():
+                db_path = old_db
+            else:
+                db_path = new_db
         
         self.db_path = Path(db_path)
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
