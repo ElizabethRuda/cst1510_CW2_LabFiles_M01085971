@@ -1,0 +1,38 @@
+🚀 Multi-Domain Intelligence Platform | Data Visualization & Analytics Dashboard
+
+Just completed an advanced intelligence platform using Python, Streamlit, and SQLite. This full-stack web application provides real-time monitoring and analysis across multiple domains.
+
+✅ Key Features:
+• Real-time cyber incident monitoring & visualization
+• IT ticket management with priority filtering
+• Dataset metadata analytics
+• Interactive Plotly dashboards with dynamic filtering
+• Secure authentication system
+• SQLite database integration with CRUD operations
+• Responsive web interface
+
+🔧 Tech Stack:
+Python | Streamlit | Plotly | Pandas | SQLite | Data Visualization
+
+The platform enables security analysts, IT administrators, and data scientists to monitor, filter, and analyze critical information in real-time through intuitive dashboards and advanced analytics.
+
+Key capabilities include:
+• Severity-based incident filtering
+• Timeline visualization of trends
+• Category-based data organization
+• Interactive charts (pie, bar, line, histogram)
+• Export and reporting features
+
+This project demonstrates skills in:
+✅ Full-Stack Web Development
+✅ Database Design & Management
+✅ Data Visualization & Analytics
+✅ User Interface Design
+✅ Security Implementation
+
+#DataScience #Python #Streamlit #DataVisualization #CyberSecurity #ITManagement #Analytics #WebDevelopment #SQLite #Dashboard #DataAnalytics #FullStack #SoftwareDevelopment #DatabaseDesign #WebApplications #DataEngineering #BusinessIntelligence #PortfolioProject
+
+[Add screenshots of dashboard and visualizations]
+[Link to GitHub repository if available]
+
+
