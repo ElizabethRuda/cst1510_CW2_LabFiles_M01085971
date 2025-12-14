@@ -72,9 +72,6 @@ inc_df = pd.DataFrame(incidents) if incidents else pd.DataFrame(columns=["id", "
 dat_df = pd.DataFrame(datasets) if datasets else pd.DataFrame(columns=["id", "name", "source", "category", "size"])
 tic_df = pd.DataFrame(tickets) if tickets else pd.DataFrame(columns=["id", "title", "priority", "status", "created_date"])
 
-# Close connection
-conn.close()
-
 # Key Metrics
 st.markdown("---")
 st.subheader("🎯 Key Metrics")
