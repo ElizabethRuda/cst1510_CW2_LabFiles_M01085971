@@ -1,0 +1,4 @@
+Eli,$2b$12$Q06iz/aLc7nunGiJ5yWEoOxZERy4qyQNelH3CmK/6MClp5cOsqhSG,user
+Alex,$2b$12$wisZwJS0Pwvr6yuy2t.AROp0YQ0sYBnW.1y7RNQlEorOJ84Jur.KW,user
+Molly,$2b$12$hal0ZIO2.v5iWDOmF5OUiurw168qpId7jzjIKrSLNKKr5ZW.Ltt7S,user
+Darko,$2b$12$ynW7kgC1gY8FIKNU6QnueeBpBrz7lI6esEmq0qCuY7YPWU0Ejmmo.,user
