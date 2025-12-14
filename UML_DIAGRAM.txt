@@ -1,0 +1,132 @@
+================================================================================
+UML CLASS DIAGRAM - Multi-Domain Intelligence Platform
+================================================================================
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                              User                                           │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ - id: int                                                                    │
+│ - username: str                                                              │
+│ - password_hash: str                                                          │
+│ - role: str                                                                  │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ + __init__(username, password_hash, role, user_id)                          │
+│ + hash_password(password: str) -> str : static                              │
+│ + verify_password(password: str) -> bool                                    │
+│ + is_admin() -> bool                                                        │
+│ + is_analyst() -> bool                                                      │
+│ + to_dict() -> dict                                                         │
+│ + from_dict(data: dict) -> User : classmethod                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                        SecurityIncident                                     │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ - id: int                                                                    │
+│ - title: str                                                                │
+│ - severity: str                                                              │
+│ - status: str                                                               │
+│ - date: str                                                                  │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ + __init__(title, severity, status, date, incident_id)                      │
+│ + is_critical() -> bool                                                     │
+│ + is_resolved() -> bool                                                     │
+│ + to_dict() -> dict                                                         │
+│ + from_dict(data: dict) -> SecurityIncident : classmethod                   │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                            Dataset                                          │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ - id: int                                                                    │
+│ - name: str                                                                 │
+│ - source: str                                                               │
+│ - category: str                                                             │
+│ - size: int (bytes)                                                         │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ + __init__(name, source, category, size, dataset_id)                         │
+│ + get_size_gb() -> float                                                    │
+│ + get_size_mb() -> float                                                    │
+│ + is_large(threshold_bytes: int) -> bool                                    │
+│ + to_dict() -> dict                                                         │
+│ + from_dict(data: dict) -> Dataset : classmethod                           │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                            ITTicket                                         │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ - id: int                                                                    │
+│ - title: str                                                                │
+│ - priority: str                                                             │
+│ - status: str                                                               │
+│ - created_date: str                                                         │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ + __init__(title, priority, status, created_date, ticket_id)                  │
+│ + is_high_priority() -> bool                                                │
+│ + is_open() -> bool                                                         │
+│ + to_dict() -> dict                                                         │
+│ + from_dict(data: dict) -> ITTicket : classmethod                          │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                      IncidentRepository                                      │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ - db_path: str                                                               │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ + __init__(db_path)                                                         │
+│ + get_all() -> List[SecurityIncident]                                       │
+│ + create(title, severity, status, date) -> SecurityIncident                 │
+│ + update_status(incident_id, new_status) -> bool                            │
+│ + delete(incident_id) -> bool                                               │
+└─────────────────────────────────────────────────────────────────────────────┘
+                              │
+                              │ uses
+                              ▼
+                    ┌─────────────────────┐
+                    │  SecurityIncident   │
+                    └─────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                            AIService                                        │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ - api_key: str                                                               │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ + __init__(api_key)                                                         │
+│ + is_available() -> bool                                                    │
+│ + get_security_advice(incident_summary: str) -> str                         │
+│ + analyze_data_trend(domain, data_summary) -> str                           │
+│ + chat(user_message, context) -> str                                       │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                      Database Functions                                      │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ connect_database(db_path) -> Connection                                     │
+│ get_all_incidents(conn) -> List[Tuple]                                      │
+│ get_all_datasets(conn) -> List[Tuple]                                       │
+│ get_all_tickets(conn) -> List[Tuple]                                         │
+│ create_incident(conn, title, severity, status, date) -> int                  │
+│ update_incident_status(conn, incident_id, new_status)                        │
+│ delete_incident(conn, incident_id)                                           │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+================================================================================
+RELATIONSHIPS:
+================================================================================
+
+IncidentRepository ──uses──> SecurityIncident
+IncidentRepository ──uses──> Database Functions
+AIService ──uses──> OpenAI API (external)
+User ──uses──> bcrypt (external library)
+
+================================================================================
+DESIGN PATTERNS USED:
+================================================================================
+
+1. Repository Pattern: IncidentRepository encapsulates data access
+2. Singleton Pattern: AIService uses singleton for API instance
+3. Factory Pattern: from_dict() methods create objects from dictionaries
+4. Strategy Pattern: Different visualization strategies per domain
+
+================================================================================
+

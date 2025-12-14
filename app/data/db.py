@@ -1,11 +1,11 @@
 import sqlite3
 from pathlib import Path
 
-# Папка с данными и путь к базе
+# Data directory and database path
 DATA_DIR = Path("DATA")
 DB_PATH = DATA_DIR / "intelligence_platform.db"
 
-# Создаём DATA, если её нет
+# Create DATA directory if it doesn't exist
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 

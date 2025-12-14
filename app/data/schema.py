@@ -61,7 +61,7 @@ def create_it_tickets_table(conn):
 
 # MAIN FUNCTION: CREATE ALL TABLES
 def create_all_tables():
-    conn = connect_database()   # ← здесь открываем соединение ТОЛЬКО ОДИН раз
+    conn = connect_database()   # Open connection only once here
     create_users_table(conn)
     create_cyber_incidents_table(conn)
     create_datasets_metadata_table(conn)

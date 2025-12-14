@@ -1,0 +1,121 @@
+================================================================================
+ENTITY-RELATIONSHIP (ER) DIAGRAM
+Multi-Domain Intelligence Platform Database Schema
+================================================================================
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                              USERS                                           │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ PK │ id              INTEGER PRIMARY KEY AUTOINCREMENT                      │
+│    │ username        TEXT UNIQUE NOT NULL                                   │
+│    │ password_hash   TEXT NOT NULL                                          │
+│    │ role            TEXT DEFAULT 'user'                                    │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    │ (1:N relationship - future)
+                                    │ Users can create multiple incidents/tickets
+                                    │
+                                    ▼
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                        CYBER_INCIDENTS                                       │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ PK │ id              INTEGER PRIMARY KEY AUTOINCREMENT                      │
+│    │ title           TEXT NOT NULL                                           │
+│    │ severity        TEXT CHECK(severity IN ('Critical','High','Medium',    │
+│    │                  'Low'))                                                │
+│    │ status          TEXT CHECK(status IN ('open','in_progress','resolved')) │
+│    │ date            TEXT                                                    │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                       DATASETS_METADATA                                      │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ PK │ id              INTEGER PRIMARY KEY AUTOINCREMENT                      │
+│    │ name            TEXT NOT NULL                                           │
+│    │ source          TEXT                                                    │
+│    │ category        TEXT                                                    │
+│    │ size            INTEGER DEFAULT 0  (size in bytes)                     │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                          IT_TICKETS                                          │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ PK │ id              INTEGER PRIMARY KEY AUTOINCREMENT                      │
+│    │ title           TEXT NOT NULL                                           │
+│    │ priority        TEXT CHECK(priority IN ('critical','high','medium',   │
+│    │                  'low'))                                                │
+│    │ status          TEXT CHECK(status IN ('open','in_progress','resolved', │
+│    │                  'closed'))                                            │
+│    │ created_date    TEXT                                                    │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+================================================================================
+TABLE DESCRIPTIONS:
+================================================================================
+
+USERS
+  Purpose: Stores user authentication and authorization information
+  Constraints:
+    - username must be unique
+    - password_hash stores bcrypt hashed passwords
+    - role defaults to 'user' (can be 'admin', 'analyst', 'user')
+
+CYBER_INCIDENTS
+  Purpose: Tracks security incidents and their resolution status
+  Constraints:
+    - severity: Critical, High, Medium, Low
+    - status: open, in_progress, resolved
+    - date: ISO format string (YYYY-MM-DD)
+
+DATASETS_METADATA
+  Purpose: Catalog of datasets with metadata for data governance
+  Constraints:
+    - name is required
+    - size stored in bytes (can be converted to GB/MB)
+    - source and category are optional
+
+IT_TICKETS
+  Purpose: IT support ticket tracking system
+  Constraints:
+    - priority: critical, high, medium, low
+    - status: open, in_progress, resolved, closed
+    - created_date: ISO format string
+
+================================================================================
+DATA FLOW:
+================================================================================
+
+CSV Files ──> Data Loading Functions ──> SQLite Tables
+    │
+    ├──> cyber_incidents.csv ──> CYBER_INCIDENTS
+    ├──> datasets_metadata.csv ──> DATASETS_METADATA
+    └──> it_tickets.csv ──> IT_TICKETS
+
+users.txt ──> Migration Script ──> USERS table
+
+================================================================================
+INDEXES (Recommended for Production):
+================================================================================
+
+CREATE INDEX idx_incidents_severity ON cyber_incidents(severity);
+CREATE INDEX idx_incidents_status ON cyber_incidents(status);
+CREATE INDEX idx_tickets_priority ON it_tickets(priority);
+CREATE INDEX idx_tickets_status ON it_tickets(status);
+CREATE INDEX idx_datasets_category ON datasets_metadata(category);
+
+================================================================================
+CARDINALITY:
+================================================================================
+
+USERS (1) ──< (0..N) CYBER_INCIDENTS
+  One user can create multiple incidents (future enhancement)
+
+USERS (1) ──< (0..N) IT_TICKETS
+  One user can create multiple tickets (future enhancement)
+
+Note: Current implementation does not enforce foreign key relationships,
+      but schema supports future enhancement with foreign key constraints.
+
+================================================================================
+

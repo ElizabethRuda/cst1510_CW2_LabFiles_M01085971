@@ -1,0 +1,17 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.db
+*.log
+.DS_Store
+.env
+venv/
+env/
+.mypy_cache/
+*.zip
+temp_extract/
+stud.code-workspace
+

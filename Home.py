@@ -36,14 +36,14 @@ except ImportError:
             if "users" not in st.session_state:
                 st.session_state.users = {}
             
-            # Всегда добавляем тестовых пользователей, если их нет
+            # Always add test users if they don't exist
             default_users = {
                 "admin": "Admin123!",
                 "test": "Test123!",
                 "user": "User123!"
             }
             
-            # Добавляем тестовых пользователей, если их еще нет
+            # Add test users if they are not already present
             for username, password in default_users.items():
                 if username not in st.session_state.users:
                     st.session_state.users[username] = password
@@ -156,26 +156,26 @@ with tab_register:
 with tab_login:
     st.subheader("Login to Your Account")
     
-    # Кнопка для инициализации тестовых пользователей (если их нет)
+    # Button to initialize test users (if they don't exist)
     if not st.session_state.users or len(st.session_state.users) == 0:
-        st.warning("⚠️ Тестовые пользователи не инициализированы.")
-        if st.button("🔧 Инициализировать тестовых пользователей", type="secondary"):
+        st.warning("⚠️ Test users are not initialized.")
+        if st.button("🔧 Initialize Test Users", type="secondary"):
             st.session_state.users = {
                 "admin": "Admin123!",
                 "test": "Test123!",
                 "user": "User123!"
             }
-            st.success("✅ Тестовые пользователи инициализированы!")
+            st.success("✅ Test users initialized!")
             st.rerun()
     
     user = st.text_input("Username", key="login_user")
     pw = st.text_input("Password", type="password", key="login_pass")
     
-    # Показываем подсказку с тестовыми аккаунтами
-    with st.expander("💡 Тестовые аккаунты"):
+    # Show test accounts hint
+    with st.expander("💡 Test Accounts"):
         st.markdown("""
-        | Логин | Пароль |
-        |-------|--------|
+        | Username | Password |
+        |----------|----------|
         | `admin` | `Admin123!` |
         | `test` | `Test123!` |
         | `user` | `User123!` |
@@ -184,22 +184,22 @@ with tab_login:
     if st.button("Log in", key="btn_login", type="primary"):
         user = user.strip()
         
-        # Проверка наличия пользователей
+        # Check if users exist
         if not st.session_state.users:
-            st.error("❌ Нет зарегистрированных пользователей. Используйте кнопку выше для инициализации.")
+            st.error("❌ No registered users. Use the button above to initialize.")
             st.stop()
         
-        # Проверка логина
+        # Check username
         if not user:
-            st.error("❌ Введите логин")
+            st.error("❌ Please enter username")
             st.stop()
         
-        # Проверка пароля
+        # Check password
         if not pw:
-            st.error("❌ Введите пароль")
+            st.error("❌ Please enter password")
             st.stop()
         
-        # Проверка учетных данных
+        # Verify credentials
         stored_password = st.session_state.users.get(user)
         if stored_password and stored_password == pw:
             st.session_state.logged_in = True
@@ -209,38 +209,38 @@ with tab_login:
             st.switch_page("pages/Dashboard.py")
         else:
             st.error("❌ Invalid username or password.")
-            st.info(f"💡 Доступные пользователи: {', '.join(st.session_state.users.keys())}")
+            st.info(f"💡 Available users: {', '.join(st.session_state.users.keys())}")
 
 # Footer
 st.markdown("---")
 
-# Показываем информацию о пользователях
+# Show user information
 if st.session_state.users:
     user_list = ', '.join(st.session_state.users.keys())
-    st.info(f"💡 **Доступные аккаунты:** {user_list}")
-    with st.expander("🔐 Тестовые учетные данные"):
+    st.info(f"💡 **Available accounts:** {user_list}")
+    with st.expander("🔐 Test Credentials"):
         st.markdown("""
-        | Логин | Пароль |
-        |-------|--------|
+        | Username | Password |
+        |----------|----------|
         | `admin` | `Admin123!` |
         | `test` | `Test123!` |
         | `user` | `User123!` |
         """)
 else:
-    st.warning("⚠️ Тестовые пользователи не инициализированы. Перезапустите приложение или используйте кнопку инициализации.")
+    st.warning("⚠️ Test users are not initialized. Restart the application or use the initialization button.")
 
 # Link to advanced version
 st.markdown("---")
 col1, col2 = st.columns(2)
 with col1:
-    st.markdown("**🚀 Advanced Version:**")
-    if st.button("🌌 Go to Advanced Auth", use_container_width=True):
-        st.switch_page("Home_Advanced.py")
+    # Advanced version removed - using basic version only
+    st.info("📊 Multi-Domain Intelligence Platform")
+    
 with col2:
-    st.markdown("**📊 Dashboard Versions:**")
-    if st.button("🌙 Dark Mode", use_container_width=True):
+    st.markdown("**📊 Dashboard:**")
+    if st.button("📊 Go to Dashboard", use_container_width=True):
         if st.session_state.logged_in:
-            st.switch_page("pages/Dashboard_Dark.py")
+            st.switch_page("pages/Dashboard.py")
         else:
             st.warning("Please login first!")
 

@@ -10,15 +10,13 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-# Use absolute path from app.data.db module
-from app.data.db import DB_PATH
+DB_PATH = PROJECT_ROOT / "DATA" / "intelligence_platform.db"
 
 # Import database functions
 from app.data.db import connect_database
 from app.data.incidents import get_all_incidents
 from app.data.datasets import get_all_datasets
 from app.data.tickets import get_all_tickets
-from app.services.ai_service import get_ai_service
 
 # Page configuration
 st.set_page_config(
@@ -114,8 +112,8 @@ with col5:
 st.markdown("---")
 
 # Main content with tabs
-tab1, tab2, tab3, tab4, tab5 = st.tabs(
-    ["🛡️ Cyber Incidents", "📚 Datasets", "🎫 IT Tickets", "📈 Analytics", "🤖 AI Assistant"]
+tab1, tab2, tab3, tab4 = st.tabs(
+    ["🛡️ Cyber Incidents", "📚 Datasets", "🎫 IT Tickets", "📈 Analytics"]
 )
 
 # -------------------------
@@ -391,59 +389,16 @@ with tab4:
             fig.update_layout(showlegend=False)
             st.plotly_chart(fig, use_container_width=True, key="analytics_tickets_priority")
 
-# -------------------------
-# TAB 5: AI ASSISTANT
-# -------------------------
-with tab5:
-    st.subheader("🤖 AI Assistant")
-    
-    ai_service = get_ai_service()
-    
-    if not ai_service.is_available():
-        st.warning("⚠️ OpenAI API key not configured. Please set OPENAI_API_KEY environment variable.")
-        st.info("💡 Create a `.env` file in the project root with: `OPENAI_API_KEY=your_key_here`")
-    else:
-        st.success("✅ AI Assistant is ready!")
-        
-        # Chat interface
-        if "ai_messages" not in st.session_state:
-            st.session_state.ai_messages = []
-        
-        # Display chat history
-        for msg in st.session_state.ai_messages:
-            with st.chat_message(msg["role"]):
-                st.write(msg["content"])
-        
-        # Chat input
-        user_input = st.chat_input("Ask me anything about cybersecurity, IT operations, or data science...")
-        
-        if user_input:
-            # Add user message
-            st.session_state.ai_messages.append({"role": "user", "content": user_input})
-            
-            # Get AI response
-            with st.spinner("Thinking..."):
-                context = {
-                    "total_incidents": len(inc_df),
-                    "total_datasets": len(dat_df),
-                    "total_tickets": len(tic_df)
-                }
-                response = ai_service.chat(user_input, context)
-            
-            # Add AI response
-            st.session_state.ai_messages.append({"role": "assistant", "content": response})
-            st.rerun()
-
 # Sidebar
 with st.sidebar:
     st.markdown("### 🔧 Navigation")
     st.markdown("---")
     
-    # Theme switcher (removed - using default theme)
-    # st.markdown("### 🎨 Theme")
-    # if st.button("🌙 Switch to Dark Mode"):
-    #     st.session_state.theme = "dark"
-    #     st.switch_page("pages/Dashboard_Dark.py")
+    # Theme switcher
+    st.markdown("### 🎨 Theme")
+    if st.button("🌙 Switch to Dark Mode"):
+        st.session_state.theme = "dark"
+        st.switch_page("pages/Dashboard_Dark.py")
     
     st.markdown("---")
     

@@ -1,0 +1,172 @@
+================================================================================
+DATA FLOW DIAGRAM (DFD) - Level 0 (Context Diagram)
+Multi-Domain Intelligence Platform
+================================================================================
+
+                    ┌─────────────────────────────────┐
+                    │                                 │
+    User Login      │   Multi-Domain Intelligence     │
+    Credentials ────>│         Platform                │
+                    │                                 │
+    User Queries    │                                 │
+    (AI Chat)   ────>│                                 │
+                    │                                 │
+                    │                                 │
+    <───────────────│   Dashboard Visualizations     │
+    Charts & Data   │   AI Responses                  │
+                    │   Analysis Results              │
+                    │                                 │
+                    └─────────────────────────────────┘
+                              │
+                              │
+                              ▼
+                    ┌─────────────────┐
+                    │  SQLite Database│
+                    │  (DATA/)        │
+                    └─────────────────┘
+
+================================================================================
+DFD - Level 1 (Main Processes)
+================================================================================
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                              EXTERNAL ENTITIES                               │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  User                                                                        │
+│  OpenAI API                                                                  │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                              DATA STORES                                     │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  D1: SQLite Database (intelligence_platform.db)                              │
+│      - users                                                                 │
+│      - cyber_incidents                                                      │
+│      - datasets_metadata                                                     │
+│      - it_tickets                                                            │
+│                                                                              │
+│  D2: CSV Files (DATA/)                                                      │
+│      - cyber_incidents.csv                                                   │
+│      - datasets_metadata.csv                                                 │
+│      - it_tickets.csv                                                        │
+│      - users.txt                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                              PROCESSES                                       │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  1.0 AUTHENTICATION                                                          │
+│     Input:  Username, Password                                               │
+│     Output: Session State, Login Status                                      │
+│     Reads:  D1 (users table)                                                │
+│                                                                              │
+│  2.0 DATA RETRIEVAL                                                          │
+│     Input:  Domain Selection (Cyber/Datasets/Tickets)                       │
+│     Output: Domain Data (Incidents/Datasets/Tickets)                         │
+│     Reads:  D1 (respective tables)                                          │
+│                                                                              │
+│  3.0 DATA VISUALIZATION                                                      │
+│     Input:  Domain Data                                                     │
+│     Output: Charts (Pie, Bar, Line, Histogram)                               │
+│     Process: Plotly chart generation                                         │
+│                                                                              │
+│  4.0 AI PROCESSING                                                           │
+│     Input:  User Query, Domain Context                                      │
+│     Output: AI Response                                                     │
+│     External: OpenAI API                                                      │
+│                                                                              │
+│  5.0 DATA ANALYSIS                                                            │
+│     Input:  Domain Data                                                     │
+│     Output: Insights, Statistics, Metrics                                    │
+│     Process: Pandas data analysis                                            │
+│                                                                              │
+│  6.0 DATA LOADING (Initialization)                                           │
+│     Input:  CSV Files (D2)                                                  │
+│     Output: Database Records                                                 │
+│     Writes: D1 (respective tables)                                          │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+================================================================================
+DATA FLOWS:
+================================================================================
+
+User ──[Login Credentials]──> 1.0 AUTHENTICATION
+1.0 AUTHENTICATION ──[Session State]──> Dashboard
+1.0 AUTHENTICATION ──[Read Request]──> D1 (users)
+
+User ──[Domain Selection]──> 2.0 DATA RETRIEVAL
+2.0 DATA RETRIEVAL ──[Read Request]──> D1
+D1 ──[Domain Data]──> 2.0 DATA RETRIEVAL
+2.0 DATA RETRIEVAL ──[Domain Data]──> 3.0 DATA VISUALIZATION
+2.0 DATA RETRIEVAL ──[Domain Data]──> 5.0 DATA ANALYSIS
+
+3.0 DATA VISUALIZATION ──[Charts]──> User
+5.0 DATA ANALYSIS ──[Insights]──> User
+
+User ──[AI Query]──> 4.0 AI PROCESSING
+4.0 AI PROCESSING ──[API Request]──> OpenAI API
+OpenAI API ──[AI Response]──> 4.0 AI PROCESSING
+4.0 AI PROCESSING ──[AI Response]──> User
+
+D2 ──[CSV Data]──> 6.0 DATA LOADING
+6.0 DATA LOADING ──[Database Records]──> D1
+
+================================================================================
+DFD - Level 2 (Detailed Process: 2.0 DATA RETRIEVAL)
+================================================================================
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│  2.1 READ INCIDENTS                                                          │
+│     Reads: D1 (cyber_incidents)                                              │
+│     Output: Incident Records                                                  │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│  2.2 READ DATASETS                                                           │
+│     Reads: D1 (datasets_metadata)                                            │
+│     Output: Dataset Records                                                  │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│  2.3 READ TICKETS                                                            │
+│     Reads: D1 (it_tickets)                                                   │
+│     Output: Ticket Records                                                   │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+User Request ──> [Domain Router] ──> 2.1 / 2.2 / 2.3
+2.1 / 2.2 / 2.3 ──> [Aggregator] ──> Domain Data
+
+================================================================================
+DFD - Level 2 (Detailed Process: 3.0 DATA VISUALIZATION)
+================================================================================
+
+Domain Data ──> [Data Transformer] ──> Formatted Data
+Formatted Data ──> [Chart Generator] ──> Plotly Figures
+Plotly Figures ──> [Chart Renderer] ──> Interactive Charts
+
+Chart Types:
+  - Pie Charts (Severity, Status, Category distribution)
+  - Bar Charts (Counts by category)
+  - Line Charts (Timeline trends)
+  - Histograms (Size distributions)
+
+================================================================================
+KEY DATA FLOWS SUMMARY:
+================================================================================
+
+1. Authentication Flow:
+   User → Login → Verify Password (bcrypt) → Session State
+
+2. Data Display Flow:
+   User → Select Domain → Query Database → Process Data → Generate Charts → Display
+
+3. AI Interaction Flow:
+   User → Enter Query → Add Context → Call OpenAI API → Process Response → Display
+
+4. Data Loading Flow (Initialization):
+   CSV Files → Read Data → Validate → Insert into Database
+
+================================================================================
+

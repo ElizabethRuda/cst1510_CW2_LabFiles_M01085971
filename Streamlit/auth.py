@@ -3,23 +3,38 @@ import streamlit as st
 SPECIAL_CHARS = "!@#$%^&*()-_=+[]{};:,.<>?/\\|`~\"'"
 
 def ensure_session_defaults():
+    """Initialize session state defaults."""
     if "logged_in" not in st.session_state:
         st.session_state.logged_in = False
     if "username" not in st.session_state:
         st.session_state.username = ""
-    # demo users storage (week 9). later can connect DB service
+    # Demo users storage (week 9). Later can connect DB service
     if "users" not in st.session_state:
         st.session_state.users = {}
+    
+    # Всегда добавляем тестовых пользователей, если их нет
+    default_users = {
+        "admin": "Admin123!",
+        "test": "Test123!",
+        "user": "User123!"
+    }
+    
+    # Добавляем тестовых пользователей, если их еще нет
+    for username, password in default_users.items():
+        if username not in st.session_state.users:
+            st.session_state.users[username] = password
 
 def require_login():
+    """Require user to be logged in, redirect if not."""
     ensure_session_defaults()
     if not st.session_state.logged_in:
-        st.error("Нужно войти в систему.")
+        st.error("You must be logged in.")
         if st.button("Switch to login"):
             st.switch_page("Home.py")
         st.stop()
 
 def validate_username(username: str):
+    """Validate username format. Returns (is_valid, error_message)."""
     if len(username) < 3 or len(username) > 20:
         return False, "Username must be between 3 and 20 characters."
     if not username.isalnum():
@@ -27,6 +42,7 @@ def validate_username(username: str):
     return True, ""
 
 def validate_password(password: str):
+    """Validate password strength. Returns (is_valid, error_message)."""
     if len(password) < 6 or len(password) > 50:
         return False, "Password must be between 6 and 50 characters."
     if not any(c.islower() for c in password):
@@ -40,16 +56,24 @@ def validate_password(password: str):
     return True, ""
 
 def password_strength(password: str) -> str:
+    """Evaluate password strength: 'Weak', 'Medium', or 'Strong'."""
     score = 0
-    if len(password) >= 8: score += 1
-    if len(password) >= 12: score += 1
-    if any(c.islower() for c in password): score += 1
-    if any(c.isupper() for c in password): score += 1
-    if any(c.isdigit() for c in password): score += 1
-    if any(c in SPECIAL_CHARS for c in password): score += 1
+    if len(password) >= 8:
+        score += 1
+    if len(password) >= 12:
+        score += 1
+    if any(c.islower() for c in password):
+        score += 1
+    if any(c.isupper() for c in password):
+        score += 1
+    if any(c.isdigit() for c in password):
+        score += 1
+    if any(c in SPECIAL_CHARS for c in password):
+        score += 1
 
     if score <= 3:
         return "Weak"
     elif score <= 5:
         return "Medium"
     return "Strong"
+
