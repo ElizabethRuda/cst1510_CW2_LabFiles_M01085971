@@ -31,20 +31,34 @@ secrets.toml
 *.sqlite3
 
 # Legacy/unused directories (not part of active project)
-app/
 Streamlit/
 tz/
+multi_domain_platform/
+docs/
+screenshots/
 
-# Test files (optional - uncomment if you want to exclude)
-# test_db.py
-# main.py
+# Test files and temporary files
+test_db.py
+main.py
+auth.py
+cleanup_git.sh
+cleanup_and_commit.sh
+*.sh
+stud.code-workspace
 
 # Data files (if large, should be excluded)
-# DATA/
-# screenshots/
+DATA/
 
 # Documentation build
 docs/_build/
 *.egg-info/
 dist/
 build/
+
+# Temporary documentation files
+AUTO_CLEANUP.md
+GIT_CLEANUP_INSTRUCTIONS.md
+GIT_FILES.md
+PROJECT_STRUCTURE.md
+STRUCTURE_MIGRATION.md
+REQUIREMENTS_CHECK.md
