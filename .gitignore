@@ -33,7 +33,6 @@ secrets.toml
 # Legacy/unused directories (not part of active project)
 Streamlit/
 tz/
-multi_domain_platform/
 docs/
 screenshots/
 
