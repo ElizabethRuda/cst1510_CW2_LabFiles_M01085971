@@ -427,13 +427,83 @@ with tab5:
             # Add user message
             st.session_state.ai_messages.append({"role": "user", "content": user_input})
             
-            # Get AI response
+            # Build detailed context from loaded data
+            context_parts = []
+            
+            # Cybersecurity incidents context
+            if not inc_df.empty and len(inc_df) > 0:
+                context_parts.append(
+                    f"Cybersecurity Incidents: Total {len(inc_df)} incidents."
+                )
+                if 'severity' in inc_df.columns:
+                    severity_counts = inc_df['severity'].value_counts().to_dict()
+                    if severity_counts:
+                        context_parts.append(
+                            f"Severity breakdown: "
+                            f"{', '.join([f'{k}: {v}' for k, v in severity_counts.items()])}"
+                        )
+                if 'status' in inc_df.columns:
+                    status_counts = inc_df['status'].value_counts().to_dict()
+                    if status_counts:
+                        context_parts.append(
+                            f"Status breakdown: "
+                            f"{', '.join([f'{k}: {v}' for k, v in status_counts.items()])}"
+                        )
+            else:
+                context_parts.append(
+                    "Cybersecurity Incidents: No incidents recorded."
+                )
+            
+            # Datasets context
+            if not dat_df.empty and len(dat_df) > 0:
+                total_size = dat_df['size'].sum() if 'size' in dat_df.columns else 0
+                size_gb = total_size / (1024 * 1024 * 1024)
+                context_parts.append(
+                    f"Datasets: Total {len(dat_df)} datasets, "
+                    f"total size {size_gb:.2f} GB."
+                )
+                if 'category' in dat_df.columns:
+                    categories = dat_df['category'].value_counts().to_dict()
+                    if categories:
+                        context_parts.append(
+                            f"Categories: "
+                            f"{', '.join([f'{k}: {v}' for k, v in categories.items()])}"
+                        )
+            else:
+                context_parts.append("Datasets: No datasets recorded.")
+            
+            # IT Tickets context
+            if not tic_df.empty and len(tic_df) > 0:
+                context_parts.append(f"IT Tickets: Total {len(tic_df)} tickets.")
+                if 'priority' in tic_df.columns:
+                    priority_counts = tic_df['priority'].value_counts().to_dict()
+                    if priority_counts:
+                        context_parts.append(
+                            f"Priority breakdown: "
+                            f"{', '.join([f'{k}: {v}' for k, v in priority_counts.items()])}"
+                        )
+                if 'status' in tic_df.columns:
+                    status_counts = tic_df['status'].value_counts().to_dict()
+                    if status_counts:
+                        context_parts.append(
+                            f"Status breakdown: "
+                            f"{', '.join([f'{k}: {v}' for k, v in status_counts.items()])}"
+                        )
+            else:
+                context_parts.append("IT Tickets: No tickets recorded.")
+            
+            platform_context = " ".join(context_parts)
+            
+            # Get AI response with detailed context
             with st.spinner("Thinking..."):
-                context = f"Total incidents: {len(inc_df)}, Total datasets: {len(dat_df)}, Total tickets: {len(tic_df)}"
-                response = ai_assistant.generate_response(user_input, context)
+                response = ai_assistant.generate_response(
+                    user_input, platform_context
+                )
             
             # Add AI response
-            st.session_state.ai_messages.append({"role": "assistant", "content": response})
+            st.session_state.ai_messages.append(
+                {"role": "assistant", "content": response}
+            )
             st.rerun()
 
 # Sidebar

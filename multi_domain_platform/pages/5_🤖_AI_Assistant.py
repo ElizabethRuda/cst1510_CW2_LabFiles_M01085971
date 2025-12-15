@@ -6,7 +6,7 @@ import sys
 from pathlib import Path
 
 # Add project root to path
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
@@ -128,4 +128,5 @@ if prompt := st.chat_input("Ask me anything about the platform..."):
 if st.button("Clear Chat History"):
     st.session_state.messages = []
     st.rerun()
+
 

@@ -29,14 +29,30 @@ class AIAssistant:
             return "AI Assistant is not available. Please configure OPENAI_API_KEY."
         
         try:
+            # Build system message with platform context
+            system_message = (
+                "You are a helpful AI assistant for a Multi-Domain "
+                "Intelligence Platform. The platform manages three domains: "
+                "1. Cybersecurity - security incident tracking and analysis, "
+                "2. Data Science - dataset management and analytics, "
+                "3. IT Operations - IT support ticket management. "
+                "When users ask questions about the platform data, use the "
+                "provided context information to give accurate answers based "
+                "on the actual data in the platform. Always answer in "
+                "English. If the context contains specific numbers or "
+                "statistics, use them in your answer. If you don't have "
+                "specific data in the context, acknowledge that and provide "
+                "general guidance."
+            )
+            
             full_prompt = prompt
             if context:
-                full_prompt = f"Context: {context}\n\nQuestion: {prompt}"
+                full_prompt = f"Platform Data Context:\n{context}\n\nUser Question: {prompt}\n\nPlease answer based on the platform data context provided above."
             
             response = self.client.chat.completions.create(
                 model="gpt-3.5-turbo",
                 messages=[
-                    {"role": "system", "content": "You are a helpful assistant for a multi-domain intelligence platform."},
+                    {"role": "system", "content": system_message},
                     {"role": "user", "content": full_prompt}
                 ],
                 max_tokens=500,
