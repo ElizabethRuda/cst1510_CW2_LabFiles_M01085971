@@ -55,3 +55,4 @@ class AIAssistant:
         response = self.generate_response(prompt)
         return {"analysis": response}
 
+
