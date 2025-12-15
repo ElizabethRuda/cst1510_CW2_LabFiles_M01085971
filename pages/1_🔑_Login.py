@@ -48,31 +48,33 @@ tab_login, tab_register = st.tabs(["🔑 Login", "📝 Register"])
 with tab_register:
     st.subheader("Create New Account")
     
-    reg_user = st.text_input("Username", key="reg_user")
-    reg_pass = st.text_input("Password", type="password", key="reg_pass")
-    reg_pass2 = st.text_input("Confirm password", type="password", key="reg_pass2")
-    reg_role = st.selectbox("Role", ["user", "admin", "analyst"], key="reg_role")
-    
-    if st.button("Create account", key="btn_register", type="primary"):
-        reg_user = reg_user.strip()
+    with st.form("register_form"):
+        reg_user = st.text_input("Username", key="reg_user")
+        reg_pass = st.text_input("Password", type="password", key="reg_pass")
+        reg_pass2 = st.text_input("Confirm password", type="password", key="reg_pass2")
+        reg_role = st.selectbox("Role", ["user", "admin", "analyst"], key="reg_role")
         
-        if not reg_user:
-            st.error("Username is required")
-        elif len(reg_user) < 3:
-            st.error("Username must be at least 3 characters")
-        elif not reg_pass:
-            st.error("Password is required")
-        elif len(reg_pass) < 6:
-            st.error("Password must be at least 6 characters")
-        elif reg_pass != reg_pass2:
-            st.error("Passwords do not match")
-        else:
-            success, message = auth_manager.register_user(reg_user, reg_pass, reg_role)
-            if success:
-                st.success(f"✅ {message}")
-                st.info("💡 Go to the **Login** tab to sign in with your new account.")
+        submitted = st.form_submit_button("Create account", type="primary")
+        if submitted:
+            reg_user = reg_user.strip()
+            
+            if not reg_user:
+                st.error("Username is required")
+            elif len(reg_user) < 3:
+                st.error("Username must be at least 3 characters")
+            elif not reg_pass:
+                st.error("Password is required")
+            elif len(reg_pass) < 6:
+                st.error("Password must be at least 6 characters")
+            elif reg_pass != reg_pass2:
+                st.error("Passwords do not match")
             else:
-                st.error(f"❌ {message}")
+                success, message = auth_manager.register_user(reg_user, reg_pass, reg_role)
+                if success:
+                    st.success(f"✅ {message}")
+                    st.info("💡 Go to the **Login** tab to sign in with your new account.")
+                else:
+                    st.error(f"❌ {message}")
 
 # -------------------------
 # LOGIN TAB
@@ -80,27 +82,29 @@ with tab_register:
 with tab_login:
     st.subheader("Login to Your Account")
     
-    user = st.text_input("Username", key="login_user")
-    pw = st.text_input("Password", type="password", key="login_pass")
-    
-    if st.button("Log in", key="btn_login", type="primary"):
-        user = user.strip()
+    with st.form("login_form"):
+        user = st.text_input("Username", key="login_user")
+        pw = st.text_input("Password", type="password", key="login_pass")
         
-        if not user:
-            st.error("❌ Please enter username")
-        elif not pw:
-            st.error("❌ Please enter password")
-        else:
-            success, user_obj = auth_manager.authenticate_user(user, pw)
-            if success and user_obj:
-                st.session_state.logged_in = True
-                st.session_state.username = user_obj.username
-                st.session_state.user_role = user_obj.role
-                st.success("✅ Login successful!")
-                st.balloons()
-                st.rerun()
+        submitted = st.form_submit_button("Log in", type="primary")
+        if submitted:
+            user = user.strip()
+            
+            if not user:
+                st.error("❌ Please enter username")
+            elif not pw:
+                st.error("❌ Please enter password")
             else:
-                st.error("❌ Invalid username or password.")
+                success, user_obj = auth_manager.authenticate_user(user, pw)
+                if success and user_obj:
+                    st.session_state.logged_in = True
+                    st.session_state.username = user_obj.username
+                    st.session_state.user_role = user_obj.role
+                    st.success("✅ Login successful!")
+                    st.balloons()
+                    st.rerun()
+                else:
+                    st.error("❌ Invalid username or password.")
 
 st.markdown("---")
 st.caption("💡 Multi-Domain Intelligence Platform - Authentication System")
